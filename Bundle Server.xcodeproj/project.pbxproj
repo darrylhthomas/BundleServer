@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44387B1916ED216A00D56D6E /* BDLFileSystemNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 44387B1816ED216A00D56D6E /* BDLFileSystemNode.m */; };
+		4470D20016ED3BE10042C330 /* BDLFileSystemNodeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4470D1FF16ED3BE10042C330 /* BDLFileSystemNodeCell.m */; };
 		44F2003916EC306C00BA43AF /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFB216EC306B00BA43AF /* GCDAsyncSocket.m */; };
 		44F2003B16EC306C00BA43AF /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFB616EC306B00BA43AF /* DDAbstractDatabaseLogger.m */; };
 		44F2003C16EC306C00BA43AF /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFB816EC306B00BA43AF /* DDASLLogger.m */; };
@@ -45,6 +47,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44387B1716ED216A00D56D6E /* BDLFileSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDLFileSystemNode.h; sourceTree = "<group>"; };
+		44387B1816ED216A00D56D6E /* BDLFileSystemNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDLFileSystemNode.m; sourceTree = "<group>"; };
+		4470D1FE16ED3BE10042C330 /* BDLFileSystemNodeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDLFileSystemNodeCell.h; sourceTree = "<group>"; };
+		4470D1FF16ED3BE10042C330 /* BDLFileSystemNodeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDLFileSystemNodeCell.m; sourceTree = "<group>"; };
 		44F2006116EC32F800BA43AF /* BDLBundleConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDLBundleConnection.h; sourceTree = "<group>"; };
 		44F2006216EC32F800BA43AF /* BDLBundleConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDLBundleConnection.m; sourceTree = "<group>"; };
 		44F2006816EC34AB00BA43AF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -184,6 +190,10 @@
 				44F2006216EC32F800BA43AF /* BDLBundleConnection.m */,
 				44F2006A16EC450600BA43AF /* BDLDocumentController.h */,
 				44F2006B16EC450600BA43AF /* BDLDocumentController.m */,
+				44387B1716ED216A00D56D6E /* BDLFileSystemNode.h */,
+				44387B1816ED216A00D56D6E /* BDLFileSystemNode.m */,
+				4470D1FE16ED3BE10042C330 /* BDLFileSystemNodeCell.h */,
+				4470D1FF16ED3BE10042C330 /* BDLFileSystemNodeCell.m */,
 			);
 			path = "Bundle Server";
 			sourceTree = "<group>";
@@ -431,6 +441,8 @@
 				44F2004116EC306C00BA43AF /* DispatchQueueLogFormatter.m in Sources */,
 				44F2006316EC32F800BA43AF /* BDLBundleConnection.m in Sources */,
 				44F2006C16EC450600BA43AF /* BDLDocumentController.m in Sources */,
+				44387B1916ED216A00D56D6E /* BDLFileSystemNode.m in Sources */,
+				4470D20016ED3BE10042C330 /* BDLFileSystemNodeCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

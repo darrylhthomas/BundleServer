@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface BDLDocument : NSDocument
+@interface BDLDocument : NSDocument<NSBrowserDelegate>
+
+@property (nonatomic, weak) IBOutlet NSBrowser *browser;
 
 @end
