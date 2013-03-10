@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Bundle Server' target in the 'Bundle Server' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
