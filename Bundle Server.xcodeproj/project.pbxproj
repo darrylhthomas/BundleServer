@@ -15,7 +15,9 @@
 		44F2003F16EC306C00BA43AF /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFBE16EC306B00BA43AF /* DDTTYLogger.m */; };
 		44F2004016EC306C00BA43AF /* ContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFC116EC306B00BA43AF /* ContextFilterLogFormatter.m */; };
 		44F2004116EC306C00BA43AF /* DispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FFC316EC306B00BA43AF /* DispatchQueueLogFormatter.m */; };
+		44F2006316EC32F800BA43AF /* BDLBundleConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2006216EC32F800BA43AF /* BDLBundleConnection.m */; };
 		44F2006916EC34AB00BA43AF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44F2006816EC34AB00BA43AF /* Security.framework */; };
+		44F2006C16EC450600BA43AF /* BDLDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2006B16EC450600BA43AF /* BDLDocumentController.m */; };
 		44F2FE9616EC293200BA43AF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44F2FE9516EC293200BA43AF /* Cocoa.framework */; };
 		44F2FEA016EC293200BA43AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 44F2FE9E16EC293200BA43AF /* InfoPlist.strings */; };
 		44F2FEA216EC293200BA43AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F2FEA116EC293200BA43AF /* main.m */; };
@@ -43,7 +45,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44F2006116EC32F800BA43AF /* BDLBundleConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDLBundleConnection.h; sourceTree = "<group>"; };
+		44F2006216EC32F800BA43AF /* BDLBundleConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDLBundleConnection.m; sourceTree = "<group>"; };
 		44F2006816EC34AB00BA43AF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		44F2006A16EC450600BA43AF /* BDLDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDLDocumentController.h; sourceTree = "<group>"; };
+		44F2006B16EC450600BA43AF /* BDLDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDLDocumentController.m; sourceTree = "<group>"; };
 		44F2FE9216EC293200BA43AF /* Bundle Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bundle Server.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		44F2FE9516EC293200BA43AF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		44F2FE9816EC293200BA43AF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -169,11 +175,15 @@
 		44F2FE9B16EC293200BA43AF /* Bundle Server */ = {
 			isa = PBXGroup;
 			children = (
+				44F2FE9C16EC293200BA43AF /* Supporting Files */,
 				44F2FEA716EC293200BA43AF /* BDLDocument.h */,
 				44F2FEA816EC293200BA43AF /* BDLDocument.m */,
 				44F2FEAA16EC293200BA43AF /* BDLDocument.xib */,
 				44F2FEAD16EC293300BA43AF /* MainMenu.xib */,
-				44F2FE9C16EC293200BA43AF /* Supporting Files */,
+				44F2006116EC32F800BA43AF /* BDLBundleConnection.h */,
+				44F2006216EC32F800BA43AF /* BDLBundleConnection.m */,
+				44F2006A16EC450600BA43AF /* BDLDocumentController.h */,
+				44F2006B16EC450600BA43AF /* BDLDocumentController.m */,
 			);
 			path = "Bundle Server";
 			sourceTree = "<group>";
@@ -419,6 +429,8 @@
 				44F2003F16EC306C00BA43AF /* DDTTYLogger.m in Sources */,
 				44F2004016EC306C00BA43AF /* ContextFilterLogFormatter.m in Sources */,
 				44F2004116EC306C00BA43AF /* DispatchQueueLogFormatter.m in Sources */,
+				44F2006316EC32F800BA43AF /* BDLBundleConnection.m in Sources */,
+				44F2006C16EC450600BA43AF /* BDLDocumentController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,6 +574,7 @@
 				44F2FEB416EC293300BA43AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,14 +7,28 @@
 //
 
 #import "BDLDocument.h"
+#import "HTTPServer.h"
+#import "BDLBundleConnection.h"
 
 @implementation BDLDocument
+{
+    HTTPServer *_server;
+    NSURL *_rootURL;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        // Add your subclass-specific initialization here.
+        _server = [[HTTPServer alloc] init];
+        [_server setConnectionClass:[BDLBundleConnection class]];
+        [_server setType:@"_http._tcp."];
+        
+        NSError *error = nil;
+        if (![_server start:&error]) {
+            NSLog(@"Error starting bundle server: %@", [error localizedDescription]);
+            return nil;
+        }
     }
     return self;
 }
@@ -37,23 +51,17 @@
     return YES;
 }
 
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
+- (BOOL)readFromURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError *__autoreleasing *)outError
 {
-    // Insert code here to write your document to data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning nil.
-    // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-    NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-    @throw exception;
-    return nil;
+    _rootURL = url;
+    [_server setDocumentRoot:[_rootURL path]];
+    
+    return YES;
 }
 
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
+- (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError *__autoreleasing *)outError
 {
-    // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
-    // You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
-    // If you override either of these, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
-    NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-    @throw exception;
-    return YES;
+    return [[NSFileWrapper alloc] initWithURL:_rootURL options:0 error:outError];
 }
 
 @end
