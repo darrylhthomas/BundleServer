@@ -16,6 +16,14 @@
 {
     HTTPServer *_server;
     BDLFileSystemNode *_rootNode;
+    FSEventStreamRef _eventStreamRef;
+}
+
+void bdldocument_fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t eventCount, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[])
+{
+    BDLDocument *document = (__bridge BDLDocument *)userData;
+    
+    [document filesDidChange];
 }
 
 - (id)init
@@ -33,6 +41,11 @@
         }
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self teardownFSEventStream];
 }
 
 - (void)awakeFromNib
@@ -65,12 +78,43 @@
     
     [self.browser loadColumnZero];
     
+    [self setupFSEventStreamForPaths:@[[url path]]];
     return (_rootNode != nil);
 }
 
 - (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError *__autoreleasing *)outError
 {
     return nil;
+}
+
+- (void)setupFSEventStreamForPaths:(NSArray *)paths
+{
+    [self teardownFSEventStream];
+    
+    void *selfPointer = (__bridge void *)self;
+    FSEventStreamContext context = {0, selfPointer, NULL, NULL, NULL};
+    CFAbsoluteTime latency = 0.1;
+    
+    _eventStreamRef = FSEventStreamCreate(NULL, &bdldocument_fsevents_callback, &context, (__bridge CFArrayRef)paths, 0, latency, kFSEventStreamCreateFlagUseCFTypes);
+    
+    FSEventStreamScheduleWithRunLoop(_eventStreamRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+    FSEventStreamStart(_eventStreamRef);
+}
+
+- (void)teardownFSEventStream
+{
+    if (_eventStreamRef == NULL)
+        return;
+    
+    FSEventStreamStop(_eventStreamRef);
+    FSEventStreamInvalidate(_eventStreamRef);
+    _eventStreamRef = NULL;
+}
+
+- (void)filesDidChange
+{
+    [_rootNode invalidateChildren];
+    [self.browser loadColumnZero];
 }
 
 #pragma mark - NSBrowserDelegate

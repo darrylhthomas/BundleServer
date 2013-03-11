@@ -17,5 +17,9 @@
 
 - (id)initWithFileURL:(NSURL *)fileURL;
 - (void)invalidateChildren;
+- (NSDictionary *)dictionaryRepresentation;
+- (NSDictionary *)dictionaryRepresentationWithBaseURL:(NSURL *)baseURL;
+- (BDLFileSystemNode *)nodeAtRelativePath:(NSString *)nodePath;
+- (BDLFileSystemNode *)childWithFilename:(NSString *)childName;
 
 @end

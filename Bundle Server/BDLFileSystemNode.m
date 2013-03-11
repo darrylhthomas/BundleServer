@@ -129,4 +129,67 @@
     [_children makeObjectsPerformSelector:@selector(invalidateChildren)];
 }
 
+- (NSDictionary *)dictionaryRepresentation
+{
+    return [self dictionaryRepresentationWithBaseURL:self.url];
+}
+
+- (NSDictionary *)dictionaryRepresentationWithBaseURL:(NSURL *)baseURL
+{
+    return [self dictionaryRepresentationWithBaseURL:baseURL isRootNode:YES];
+}
+
+- (NSDictionary *)dictionaryRepresentationWithBaseURL:(NSURL *)baseURL isRootNode:(BOOL)isRootNode
+{
+    NSURL *url = nil;
+    if (isRootNode) {
+        url = baseURL;
+    } else if (![baseURL isEqual:self.url]) {
+        url = [baseURL URLByAppendingPathComponent:[self.url lastPathComponent] isDirectory:self.isDirectory];
+    }
+    
+    NSMutableArray *children = [[NSMutableArray alloc] initWithCapacity:[self.children count]];
+    for (BDLFileSystemNode *child in self.children) {
+        [children addObject:[child dictionaryRepresentationWithBaseURL:url isRootNode:NO]];
+    }
+    
+    return @{
+             @"url" : [url absoluteString],
+             @"name" : isRootNode ? @"/" : [self.url lastPathComponent],
+             @"isDirectory" : @(self.isDirectory),
+             @"children" : [children copy],
+             };
+}
+
+- (BDLFileSystemNode *)nodeAtRelativePath:(NSString *)nodePath
+{
+    BDLFileSystemNode *result = self;
+    NSArray *pathComponents = [nodePath pathComponents];
+    for (NSString *component in pathComponents) {
+        if ([component isEqualToString:@"/"])
+            continue;
+        
+        result = [result childWithFilename:component];
+        if (!result)
+            break;
+    }
+    
+    return result;
+}
+
+- (BDLFileSystemNode *)childWithFilename:(NSString *)childName
+{
+    NSParameterAssert(childName);
+    
+    BDLFileSystemNode *result = nil;
+    for (BDLFileSystemNode *child in self.children) {
+        if ([[child.url lastPathComponent] isEqualToString:childName]) {
+            result = child;
+            break;
+        }
+    }
+    
+    return result;
+}
+
 @end
