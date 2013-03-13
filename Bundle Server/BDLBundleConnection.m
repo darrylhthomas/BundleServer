@@ -80,7 +80,8 @@ void bdlbundleconnection_fsevents_callback(ConstFSEventStreamRef streamRef, void
         
         NSString *scheme = [self isSecureServer] ? @"https" : @"http";
         HTTPServer *server = [config server];
-        NSString *host = [NSString stringWithFormat:@"%@.%@:%u", [server publishedName], [server domain], (unsigned int)[server listeningPort]];
+        NSString *hostName = [[NSHost currentHost] name];
+        NSString *host = [NSString stringWithFormat:@"%@:%u", hostName, (unsigned int)[server listeningPort]];
         NSString *urlString = [NSString stringWithFormat:@"%@://%@%@", scheme, host, path];
         NSURL *baseURL = [[NSURL alloc] initWithString:urlString];
         
