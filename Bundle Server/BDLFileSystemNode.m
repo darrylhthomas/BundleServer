@@ -6,17 +6,20 @@
 //
 
 #import "BDLFileSystemNode.h"
+#import <CommonCrypto/CommonCrypto.h>
 
 @implementation BDLFileSystemNode
 {
     NSArray *_children;
     BOOL _childrenAreDirty;
+    NSString *_md5String;
 }
 
 @dynamic displayName;
 @dynamic children;
 @dynamic isDirectory;
 @dynamic icon;
+@dynamic md5String;
 
 - (id)initWithFileURL:(NSURL *)fileURL
 {
@@ -45,6 +48,25 @@
     return result;
 }
 
+- (NSString *)abbreviatedPathWithInitialLetters
+{
+    NSArray *pathComponents = [self.url pathComponents];
+    NSUInteger count = [pathComponents count];
+    NSUInteger lastIndex = count - 1;
+    NSMutableArray *abbreviatedPathComponents = [[NSMutableArray alloc] initWithCapacity:count];
+    [pathComponents enumerateObjectsUsingBlock:^(NSString *component, NSUInteger idx, BOOL *stop) {
+        if (idx == lastIndex || [component length] < 1) {
+            [abbreviatedPathComponents addObject:component];
+        } else {
+            NSString *abbreviatedComponent = [component substringWithRange:NSMakeRange(0, 1)];
+            [abbreviatedPathComponents addObject:abbreviatedComponent];
+        }
+    }];
+    
+    NSURL *url = [NSURL fileURLWithPathComponents:abbreviatedPathComponents];
+    return [url path];
+}
+
 - (NSImage *)icon
 {
     return [[NSWorkspace sharedWorkspace] iconForFile:[self.url path]];
@@ -60,6 +82,16 @@
     }
     
     return result;
+}
+
+- (NSUInteger)fileSize
+{
+    if (self.isDirectory)
+        return 0;
+    
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[self.url path] error:NULL];
+    
+    return [attributes fileSize];
 }
 
 - (BOOL)isEqual:(id)object
@@ -78,8 +110,58 @@
     return [self.url hash];
 }
 
+- (NSString *)md5String
+{
+    if (self.isDirectory)
+        return nil;
+    
+    if (!_md5String) {
+        NSData *data = [[NSData alloc] initWithContentsOfURL:self.url options:NSDataReadingMapped error:NULL];
+        if (!data)
+            return @"";
+        
+        CC_MD5_CTX context;
+        CC_MD5_Init(&context);
+        NSUInteger totalLength = [data length];
+        NSUInteger bufferLen = MIN(16 * 1024 * 1024, totalLength);
+        if (bufferLen == 0)
+            return @"";
+        
+        NSUInteger offset = 0;
+        uint8_t *buffer = calloc(bufferLen, sizeof(uint8_t));
+        if (buffer == NULL)
+            return @"";
+        
+        while (offset < totalLength) {
+            NSRange range = NSMakeRange(offset, bufferLen);
+            [data getBytes:buffer range:range];
+            CC_MD5_Update(&context, buffer, (CC_LONG)bufferLen);
+            
+            offset += bufferLen;
+            bufferLen = MIN(16 * 1024 * 1024, totalLength - offset);
+        }
+        free(buffer), buffer = NULL;
+        
+        unsigned char result[CC_MD5_DIGEST_LENGTH];
+        CC_MD5_Final(result, &context);
+        
+        _md5String = [[NSString alloc] initWithFormat:
+                      @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
+                      result[0], result[1], result[2], result[3],
+                      result[4], result[5], result[6], result[7],
+                      result[8], result[9], result[10], result[11],
+                      result[12], result[13], result[14], result[15]];
+        
+    }
+    
+    return [_md5String copy];
+}
+
 - (NSArray *)children
 {
+    if (!self.isDirectory)
+        return nil;
+    
     if (_children == nil || _childrenAreDirty) {
         NSMutableArray *children = [[NSMutableArray alloc] init];
         
@@ -148,16 +230,21 @@
         url = [baseURL URLByAppendingPathComponent:[self.url lastPathComponent] isDirectory:self.isDirectory];
     }
     
-    NSMutableArray *children = [[NSMutableArray alloc] initWithCapacity:[self.children count]];
-    for (BDLFileSystemNode *child in self.children) {
-        [children addObject:[child dictionaryRepresentationWithBaseURL:url isRootNode:NO]];
+    NSMutableArray *children = nil;
+    if (self.isDirectory) {
+        children = [[NSMutableArray alloc] initWithCapacity:[self.children count]];
+        for (BDLFileSystemNode *child in self.children) {
+            [children addObject:[child dictionaryRepresentationWithBaseURL:url isRootNode:NO]];
+        }
     }
     
     return @{
              @"url" : [url absoluteString],
              @"name" : isRootNode ? @"/" : [self.url lastPathComponent],
              @"isDirectory" : @(self.isDirectory),
-             @"children" : [children copy],
+             @"children" : self.isDirectory ? [children copy] : [NSNull null],
+             @"md5Sum" : self.isDirectory ? [NSNull null] : self.md5String,
+             @"size" : @(self.fileSize),
              };
 }
 

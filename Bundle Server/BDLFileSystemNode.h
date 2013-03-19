@@ -14,6 +14,8 @@
 @property (strong, readonly) NSImage *icon;
 @property (copy, readonly) NSArray *children;
 @property (assign, readonly) BOOL isDirectory;
+@property (copy, readonly) NSString *md5String;
+@property (assign, readonly) NSUInteger fileSize;
 
 - (id)initWithFileURL:(NSURL *)fileURL;
 - (void)invalidateChildren;
@@ -21,5 +23,6 @@
 - (NSDictionary *)dictionaryRepresentationWithBaseURL:(NSURL *)baseURL;
 - (BDLFileSystemNode *)nodeAtRelativePath:(NSString *)nodePath;
 - (BDLFileSystemNode *)childWithFilename:(NSString *)childName;
+- (NSString *)abbreviatedPathWithInitialLetters;
 
 @end
