@@ -12,4 +12,6 @@
 
 @property (nonatomic, weak) IBOutlet NSBrowser *browser;
 
+- (IBAction)doRestartServer:(id)sender;
+
 @end

@@ -30,12 +30,8 @@ void bdldocument_fsevents_callback(ConstFSEventStreamRef streamRef, void *userDa
 {
     self = [super init];
     if (self) {
-        _server = [[HTTPServer alloc] init];
-        [_server setConnectionClass:[BDLBundleConnection class]];
-        [_server setType:@"_http._tcp."];
-        
         NSError *error = nil;
-        if (![_server start:&error]) {
+        if (![self startServer:&error]) {
             NSLog(@"Error starting bundle server: %@", [error localizedDescription]);
             return nil;
         }
@@ -46,6 +42,26 @@ void bdldocument_fsevents_callback(ConstFSEventStreamRef streamRef, void *userDa
 - (void)dealloc
 {
     [self teardownFSEventStream];
+}
+
+- (BOOL)startServer:(NSError *__autoreleasing*)error
+{
+    NSString *documentRoot = [[_rootNode url] path];
+    if (_server)
+        [_server stop];
+    
+    _server = [[HTTPServer alloc] init];
+    [_server setConnectionClass:[BDLBundleConnection class]];
+    [_server setType:@"_bundleflyhttp._tcp."];
+
+    [_server setDocumentRoot:documentRoot];
+    if (_rootNode) {
+        NSString *hostName = [[NSHost currentHost] name];
+        hostName = [hostName componentsSeparatedByString:@"."][0];
+        [_server setName:[hostName stringByAppendingFormat:@":%@", [_rootNode abbreviatedPathWithInitialLetters]]];
+    }
+    
+    return [_server start:error];
 }
 
 - (void)awakeFromNib
@@ -75,6 +91,10 @@ void bdldocument_fsevents_callback(ConstFSEventStreamRef streamRef, void *userDa
 {
     _rootNode = [[BDLFileSystemNode alloc] initWithFileURL:url];
     [_server setDocumentRoot:[url path]];
+    NSString *hostName = [[NSHost currentHost] name];
+    hostName = [hostName componentsSeparatedByString:@"."][0];
+    [_server setName:[hostName stringByAppendingFormat:@":%@", [_rootNode abbreviatedPathWithInitialLetters]]];
+    [_server republishBonjour];
     
     [self.browser loadColumnZero];
     
@@ -115,6 +135,19 @@ void bdldocument_fsevents_callback(ConstFSEventStreamRef streamRef, void *userDa
 {
     [_rootNode invalidateChildren];
     [self.browser loadColumnZero];
+}
+
+- (IBAction)doRestartServer:(id)sender
+{
+    [_server stop];
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        NSError *error = nil;
+        if (![self startServer:&error]) {
+            NSLog(@"Error starting server: %@", [error localizedDescription]);
+        }
+    });
 }
 
 #pragma mark - NSBrowserDelegate
